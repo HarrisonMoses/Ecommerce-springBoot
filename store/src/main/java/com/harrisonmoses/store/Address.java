@@ -1,16 +1,19 @@
 package com.harrisonmoses.store;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-@Entity
+@Entity(name = "address")
 @Getter
 @Setter
+@ToString
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(unique = true, name="id")
+    @Column( name="id")
     private Long id;
 
     @Column(name="street")
@@ -19,6 +22,14 @@ public class Address {
     @Column(name = "city")
     private String city;
 
+    @Column(name="zip")
+    private String zip;
+
     @Column(name = "state")
     private String state;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    @ToString.Exclude
+    private User user;
 }
