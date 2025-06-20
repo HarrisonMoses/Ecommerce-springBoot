@@ -1,4 +1,4 @@
-package com.harrisonmoses.store;
+package com.harrisonmoses.store.Entity;
 
 import jakarta.persistence.*;
 import lombok.*;

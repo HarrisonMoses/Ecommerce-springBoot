@@ -1,8 +1,8 @@
 package com.harrisonmoses.store;
 
-import org.springframework.boot.SpringApplication;
+import com.harrisonmoses.store.Entity.Profile;
+import com.harrisonmoses.store.Entity.User;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ApplicationContext;
 
 
 @SpringBootApplication
@@ -18,14 +18,13 @@ public class StoreApplication {
                 .email("harris@gmail.com")
                 .build();
 
-        var address = Address.builder()
-                .city("Berlin")
-                .state("Paris")
-                .zip("12345")
-                .state("Paris")
+        var profile = Profile.builder()
+                .bio("Harry Potter")
+                .loyaltyPoints(5)
+                .phoneNumber("123456789")
                 .build();
 
-       user.addAddress(address);
+       user.addProfile(profile);
         System.out.println(user);
 
 

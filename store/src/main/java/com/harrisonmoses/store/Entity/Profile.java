@@ -1,13 +1,16 @@
-package com.harrisonmoses.store;
+package com.harrisonmoses.store.Entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 
 @Entity
 @Setter
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@ToString
 public class Profile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,4 +28,10 @@ public class Profile {
 
     @Column(name = "loyalty_points")
     private int loyaltyPoints;
+
+
+    @OneToOne()
+    @JoinColumn(name ="id")
+    @ToString.Exclude
+    private User user;
 }

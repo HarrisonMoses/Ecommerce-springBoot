@@ -1,4 +1,4 @@
-package com.harrisonmoses.store;
+package com.harrisonmoses.store.Entity;
 
 
 import jakarta.persistence.*;
@@ -39,5 +39,18 @@ public class User {
         addresses.add(address);
         address.setUser(this);
     }
+
+    public void removeAddress(Address address){
+        addresses.remove(address);
+    }
+
+    public void addProfile(Profile profile){
+        this.profile = profile;
+        profile.setUser(this);
+    }
+
+    @OneToOne(mappedBy = "user")
+    private Profile profile;
+
 
 }
