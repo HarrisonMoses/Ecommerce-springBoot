@@ -23,7 +23,7 @@ public class Cartegory {
     @Column(name = "name")
     private String name;
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "cartegory")
     private Set<Product> product  = new HashSet<>();
 
 
