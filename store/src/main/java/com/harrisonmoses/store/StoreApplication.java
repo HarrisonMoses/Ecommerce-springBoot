@@ -1,13 +1,13 @@
 package com.harrisonmoses.store;
 
 import com.harrisonmoses.store.Entity.Profile;
+import com.harrisonmoses.store.Entity.Tag;
 import com.harrisonmoses.store.Entity.User;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 
 @SpringBootApplication
 public class StoreApplication {
-
     public static void main(String[] args) {
 
 //        ApplicationContext context =  SpringApplication.run(StoreApplication.class, args);
@@ -17,17 +17,10 @@ public class StoreApplication {
                 .password("1234")
                 .email("harris@gmail.com")
                 .build();
+        var tag = new Tag(1, "bronze");
 
-        var profile = Profile.builder()
-                .bio("Harry Potter")
-                .loyaltyPoints(5)
-                .phoneNumber("123456789")
-                .build();
-
-       user.addProfile(profile);
+        user.addTag(tag);
         System.out.println(user);
-
-
 
     }
 

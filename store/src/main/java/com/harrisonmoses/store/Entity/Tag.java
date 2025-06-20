@@ -2,17 +2,19 @@ package com.harrisonmoses.store.Entity;
 
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Getter
 @Setter
-public class tag {
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
+public class Tag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name= "id")
-    private Long id;
+    private int id;
 
     @Column(name ="name")
     private String name;
