@@ -28,8 +28,8 @@ public class Address {
     @Column(name = "state")
     private String state;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
+    @ManyToOne(fetch = FetchType.LAZY , cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "user_id" )
     @ToString.Exclude
     private User user;
 }
