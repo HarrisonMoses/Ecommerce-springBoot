@@ -1,33 +1,32 @@
 package com.harrisonmoses.store.Entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
-@Entity
-@Setter
+import java.math.BigDecimal;
+
 @Getter
-@ToString
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@Setter
+@Entity
+@Table(name = "product")
 public class Product {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private Long id;
 
     @Column(name = "name")
     private String name;
 
-    @Column(name= "price")
-    private double price;
+    @Column(name = "price")
+    private BigDecimal price;
 
     @Column(name = "description")
     private String description;
 
-    @ManyToOne
-    @JoinColumn(name ="cartegory_id")
-    private Cartegory cartegory;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "category_id")
+    private Category category;
 
 
 
