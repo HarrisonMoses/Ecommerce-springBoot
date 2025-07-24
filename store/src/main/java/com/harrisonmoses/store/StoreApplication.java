@@ -12,10 +12,10 @@ import org.springframework.context.ApplicationContext;
 public class StoreApplication {
     public static void main(String[] args) {
 
-      ApplicationContext context =  SpringApplication.run(StoreApplication.class, args);
+       SpringApplication.run(StoreApplication.class, args);
 
-      var repository = context.getBean(UserService.class);
-      repository.deleteRelated();
+//      var repository = context.getBean(UserService.class);
+//      repository.deleteRelated();
 
     }
 
