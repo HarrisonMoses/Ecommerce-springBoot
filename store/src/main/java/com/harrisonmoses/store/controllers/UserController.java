@@ -1,6 +1,7 @@
 package com.harrisonmoses.store.controllers;
 
 import com.harrisonmoses.store.Dtos.UserDto;
+import com.harrisonmoses.store.Mappers.UserMapper;
 import com.harrisonmoses.store.repositories.UserRepository;
 
 import lombok.AllArgsConstructor;
@@ -19,21 +20,22 @@ import com.harrisonmoses.store.Entity.User;
 public class UserController {
 
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
     @GetMapping("")
     public Iterable<UserDto> getUsers() {
        return userRepository.findAll().stream()
-               .map(user -> new UserDto(user.getId(), user.getName(), user.getEmail()))
+               .map(userMapper::toDto)
                .toList();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUser(@PathVariable Long id) {
+    public ResponseEntity<UserDto> getUser(@PathVariable Long id) {
         var user = userRepository.findById(id).orElse(null);
         if (user == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok(userMapper.toDto(user));
     }
 }
 
