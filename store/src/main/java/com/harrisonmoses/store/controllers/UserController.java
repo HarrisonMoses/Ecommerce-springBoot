@@ -1,6 +1,7 @@
 package com.harrisonmoses.store.controllers;
 
 import com.harrisonmoses.store.Dtos.CreateUserRequest;
+import com.harrisonmoses.store.Dtos.UpdateUserRequest;
 import com.harrisonmoses.store.Dtos.UserDto;
 import com.harrisonmoses.store.Mappers.UserMapper;
 import com.harrisonmoses.store.repositories.UserRepository;
@@ -57,6 +58,29 @@ public class UserController {
 
         return ResponseEntity.created(uri).body(userDto);
 
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UserDto> updateUser(@PathVariable Long id, @RequestBody UpdateUserRequest request) {
+        var user = userRepository.findById(id).orElse(null);
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }else{
+            userMapper.updateUser(request, user);
+            userRepository.save(user);
+            return ResponseEntity.ok(userMapper.toDto(user));
+        }
+
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        var user = userRepository.findById(id).orElse(null);
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+        userRepository.delete(user);
+        return ResponseEntity.noContent().build();
     }
 }
 
