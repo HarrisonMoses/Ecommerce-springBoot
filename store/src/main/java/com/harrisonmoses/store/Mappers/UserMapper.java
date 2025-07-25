@@ -3,8 +3,10 @@ package com.harrisonmoses.store.Mappers;
 import com.harrisonmoses.store.Dtos.UserDto;
 import com.harrisonmoses.store.Entity.User;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
+    @Mapping(target ="createdAt" ,expression ="java(java.time.LocalDateTime.now())" )
     UserDto toDto(User user);
 }
