@@ -7,13 +7,17 @@ import com.harrisonmoses.store.Entity.Product;
 import com.harrisonmoses.store.Mappers.ProductMapper;
 import com.harrisonmoses.store.repositories.CategoryRepository;
 import com.harrisonmoses.store.repositories.ProductRepository;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @AllArgsConstructor
@@ -56,14 +60,13 @@ public class ProductController {
 
 
     @PostMapping("")
-    public  ResponseEntity<ProductDto> createProduct(@RequestBody CreateProductRequest request,
+    public  ResponseEntity<ProductDto> createProduct( @Valid @RequestBody CreateProductRequest request,
                                                      UriComponentsBuilder uriBuilder) {
         var category = categoryRepository.findById(request.getCategoryId()).orElse(null);
 
         if (category == null) {
             return ResponseEntity.badRequest().build();
         }
-
         var product =  productMapper.toEntity(request);
         product.setCategory(category);
         productRepository.save(product);
@@ -76,7 +79,8 @@ public class ProductController {
 
 
     @PutMapping("/{id}")
-    public  ResponseEntity<ProductDto> updateProduct(@PathVariable Long id, @RequestBody CreateProductRequest request) {
+    public  ResponseEntity<ProductDto> updateProduct(@PathVariable Long id,
+                                                     @Valid @RequestBody CreateProductRequest request) {
 
         var category = categoryRepository.findById(request.getCategoryId()).orElse(null);
         var product = productRepository.findById(id).orElse(null);
@@ -102,6 +106,8 @@ public class ProductController {
        return  ResponseEntity.noContent().build();
 
     }
+
+
 
 
 }

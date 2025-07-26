@@ -3,6 +3,8 @@ package com.harrisonmoses.store.Dtos;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.harrisonmoses.store.Entity.Category;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -12,9 +14,13 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class ProductDto {
     private Long id;
+    @NotBlank(message = "name is required.")
     private String name;
+    @NotNull(message = "price is required.")
     private BigDecimal price;
+    @NotBlank(message = "description is required.")
     private String description;
+    @NotNull(message = "category is required.")
     private Long categoryId;
 
 }
