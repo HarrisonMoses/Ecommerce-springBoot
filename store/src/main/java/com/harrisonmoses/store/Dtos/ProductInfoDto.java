@@ -1,7 +1,6 @@
 package com.harrisonmoses.store.Dtos;
 
 import lombok.Data;
-import org.mapstruct.Mapping;
 
 import java.math.BigDecimal;
 

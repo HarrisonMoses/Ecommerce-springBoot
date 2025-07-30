@@ -1,6 +1,5 @@
 package com.harrisonmoses.store.Dtos;
 
-import com.harrisonmoses.store.Entity.Product;
 import lombok.Data;
 
 import java.math.BigDecimal;

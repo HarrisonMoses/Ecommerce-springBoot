@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 public class AddCartItemRequest    {
-    @NotNull
+    @NotNull(message = "product id should be provided")
     private long productId;
     private int quantity = 0;
 }
