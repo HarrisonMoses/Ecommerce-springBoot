@@ -66,7 +66,7 @@ public class CartController {
     }
 
     @PostMapping("/{cartId}/items")
-    public ResponseEntity<?> addProductCart(@PathVariable UUID cartId,
+    public ResponseEntity<?> addProductToCart(@PathVariable UUID cartId,
                                             @Valid @RequestBody AddCartItemRequest request,
                                             UriComponentsBuilder uriBuilder){
 
@@ -75,6 +75,16 @@ public class CartController {
         if( cart == null || product == null ){
             return ResponseEntity.notFound().build();
         }
+
+        //Check if the product being added is already in the cart
+        var ExistingItem = cartItemRepository.findByCartAndProduct(cart, product);
+        if( ExistingItem != null ){
+            ExistingItem.setQuantity(ExistingItem.getQuantity() + 1);
+            cartItemRepository.save(ExistingItem);
+            var mappedCartItem = cartItemMapper.toDto(ExistingItem);
+            return ResponseEntity.ok(mappedCartItem);
+        }
+
         //create a cart Item
         var cartItem = new Cartitem();
 
