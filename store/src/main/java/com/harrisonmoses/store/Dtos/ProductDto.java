@@ -22,5 +22,4 @@ public class ProductDto {
     private String description;
     @NotNull(message = "category is required.")
     private Long categoryId;
-
 }

@@ -11,22 +11,21 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.HashMap;
+
 import java.util.List;
-import java.util.Map;
+
 
 @RestController
 @AllArgsConstructor
 @RequestMapping("/products")
 public class ProductController {
     private final CategoryRepository categoryRepository;
-    private ProductRepository productRepository;
-    private ProductMapper productMapper;
-    private List<Product> productList;
+    private final ProductRepository productRepository;
+    private final ProductMapper productMapper;
+    private final List<Product> productList;
 
     @GetMapping("")
     public Iterable<ProductDto> getProducts(
@@ -37,9 +36,9 @@ public class ProductController {
             Byte categoryId) {
 
         if(categoryId != null){
-            productList = productRepository.findByCategoryId(categoryId);
+           var product= productRepository.findByCategoryId(categoryId);
         }else{
-            productList = productRepository.findAll();
+            var product = productRepository.findAll();
         }
 
         return productList

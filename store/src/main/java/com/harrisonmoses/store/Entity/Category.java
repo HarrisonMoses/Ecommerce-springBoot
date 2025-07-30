@@ -13,13 +13,14 @@ import java.util.Set;
 @Table(name = "category")
 public class Category {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
 
     @Column(name = "name")
     private String name;
 
-    @OneToMany(mappedBy = "category")
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "category")
     private Set<Product> products = new HashSet<>();
 
 }
