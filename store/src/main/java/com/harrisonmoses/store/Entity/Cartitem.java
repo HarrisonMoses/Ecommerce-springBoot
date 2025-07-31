@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 
@@ -30,4 +31,7 @@ public class Cartitem {
     @Column(name = "quantity" , nullable = false, insertable = true, updatable = true)
     private Integer quantity;
 
+    public BigDecimal getTotalPrice() {
+        return product.getPrice().multiply(BigDecimal.valueOf(quantity));
+    }
 }

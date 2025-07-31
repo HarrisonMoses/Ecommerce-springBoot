@@ -11,16 +11,12 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface CartItemMapper {
-    @Mapping(target = "totalPrice", expression = "java(calculateTotal(cartItem))")
+    @Mapping(target = "totalPrice", expression = "java(cartItem.getTotalPrice())")
     CartItemDto toDto(Cartitem cartItem);
 
     @Mapping(target = "price", source = "price")
     @Mapping(target = "id", source = "id")
     @Mapping(target = "name", source = "name")
     ProductInfoDto map(Product product);
-
-    default BigDecimal calculateTotal(Cartitem item) {
-        return item.getProduct().getPrice().multiply(BigDecimal.valueOf(item.getQuantity()));
-    }
 
 }

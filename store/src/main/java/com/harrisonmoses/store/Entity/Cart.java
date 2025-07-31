@@ -8,6 +8,7 @@ import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -28,5 +29,17 @@ public class Cart {
 
     @OneToMany(mappedBy = "cart",fetch = FetchType.EAGER)
     private Set<Cartitem> cartItems = new LinkedHashSet<>();
+
+    public BigDecimal getTotalPrice() {
+        BigDecimal totalPrice = BigDecimal.ZERO;
+        for (Cartitem item : cartItems) {
+            BigDecimal calculatedTotalPrice = item.getProduct()
+                            .getPrice().multiply(BigDecimal
+                            .valueOf(item.getQuantity()));
+
+            totalPrice = totalPrice.add(calculatedTotalPrice);
+        }
+        return totalPrice;
+    }
 
 }
