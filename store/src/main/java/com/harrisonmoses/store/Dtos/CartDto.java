@@ -8,6 +8,7 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.UUID;
 
 @Data
@@ -15,11 +16,11 @@ public class CartDto {
     private UUID id;
 
     @JsonProperty("items")
-    private Iterable<CartItemDto> Items;
+    private Iterable<CartItemDto> Items = new ArrayList<>();
 
     @JsonFormat(pattern = "yyy-MM-dd")
     private LocalDate dateCreated;
 
-    private BigDecimal totalPrice;
+    private BigDecimal totalPrice = BigDecimal.ZERO;
 
 }
