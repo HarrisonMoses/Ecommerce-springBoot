@@ -26,7 +26,7 @@ public class Cart {
     @Column(name = "datecreated", insertable = false, updatable = false)
     private LocalDate dateCreated;
 
-    @OneToMany(mappedBy = "cart")
+    @OneToMany(mappedBy = "cart",fetch = FetchType.EAGER)
     private Set<Cartitem> cartItems = new LinkedHashSet<>();
 
 }

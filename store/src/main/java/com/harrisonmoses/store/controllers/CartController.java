@@ -53,8 +53,7 @@ public class CartController {
             return ResponseEntity.notFound().build();
         }
         //Fetch the CartItems related to that Cart
-        var productlist = cartItemRepository.findAllByCart(cart);
-        List<CartItemDto> items = productlist.stream()
+        var items = cart.getCartItems().stream()
                 .map(cartItemMapper::toDto)
                 .toList();
 
@@ -71,30 +70,34 @@ public class CartController {
                                             UriComponentsBuilder uriBuilder){
 
         var cart = cartRepository.findById(cartId).orElse(null);
-        var product = productRepository.findById(request.getProductId()).orElse(null);
-        if( cart == null || product == null ){
+        if( cart == null){
             return ResponseEntity.notFound().build();
+        }
+        var product = productRepository.findById(request.getProductId()).orElse(null);
+        if(product == null){
+            return ResponseEntity.badRequest().build();
         }
 
         //Check if the product being added is already in the cart
-        var ExistingItem = cartItemRepository.findByCartAndProduct(cart, product);
-        if( ExistingItem != null ){
-            ExistingItem.setQuantity(ExistingItem.getQuantity() + 1);
-            cartItemRepository.save(ExistingItem);
-            var mappedCartItem = cartItemMapper.toDto(ExistingItem);
-            return ResponseEntity.ok(mappedCartItem);
+        var cartItem = cart.getCartItems().stream()
+                .filter(cartItemDto -> cartItemDto.getProduct().getId().equals(product.getId()))
+                .findFirst()
+                .orElse(null);
+        if( cartItem != null){
+            cartItem.setQuantity(cartItem.getQuantity()+1);
+            cartItemRepository.save(cartItem);
+        }else{
+            //create a cart Item
+            cartItem = new Cartitem();
+            //set the productId and Cart on the CartItem
+            cartItem.setProduct(product);
+            cartItem.setCart(cart);
+            cartItem.setQuantity(request.getQuantity()==0? 1:request.getQuantity());
+
+            //save the cartItem
+            cartItemRepository.save(cartItem);
         }
 
-        //create a cart Item
-        var cartItem = new Cartitem();
-
-        //set the productId and Cart on the CartItem
-        cartItem.setProduct(product);
-        cartItem.setCart(cart);
-        cartItem.setQuantity(request.getQuantity()==0? 1:request.getQuantity());
-
-        //save the cartItem
-        cartItemRepository.save(cartItem);
 
         //Serialize the CartItem
         var mappedCartItem = cartItemMapper.toDto(cartItem);
