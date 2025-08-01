@@ -1,33 +1,32 @@
 package com.harrisonmoses.store.services;
 
-import com.harrisonmoses.store.Entity.User;
 import com.harrisonmoses.store.repositories.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.Collections;
 
 
 @Service
 @AllArgsConstructor
-public class UserService {
-    private UserRepository userRepository;
+public class UserService  extends UserDetailsService {
 
-    public void addUser(){
-        var user = User.builder()
-                .email("mary@gmail.com")
-                .name("Magumba")
-                .password("12345")
-                .build();
+    private final UserRepository userRepository;
 
-        userRepository.save(user);
-
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        var user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return new User(
+                user.getEmail(),
+                user.getPassword(),
+                Collections.emptyList()
+        );
     }
 
-    public void getUser(){
-        userRepository.findById(2L).orElseThrow();
-    }
 
-    public void deleteRelated(){
-        userRepository.deleteById(1L);
-    }
 
 }
