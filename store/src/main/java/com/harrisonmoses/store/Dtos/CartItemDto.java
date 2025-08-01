@@ -9,5 +9,5 @@ import java.math.BigDecimal;
 public class CartItemDto {
     private ProductInfoDto product;
     private int quantity;
-    private BigDecimal totalPrice;
+    private BigDecimal totalPrice = BigDecimal.ZERO;
 }

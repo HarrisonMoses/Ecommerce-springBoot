@@ -5,7 +5,7 @@ import com.harrisonmoses.store.Dtos.CartDto;
 import com.harrisonmoses.store.Dtos.CartItemDto;
 import com.harrisonmoses.store.Dtos.UpdateCartItemRequest;
 import com.harrisonmoses.store.Entity.Cart;
-import com.harrisonmoses.store.Entity.Cartitem;
+import com.harrisonmoses.store.Entity.CartItem;
 
 import com.harrisonmoses.store.Exceptions.CartItemNotFoundException;
 import com.harrisonmoses.store.Exceptions.CartNotFoundException;
@@ -78,7 +78,7 @@ public class CartService {
             cartItemRepository.save(cartItem);
         }else{
             //create a cart Item
-            cartItem = new Cartitem();
+            cartItem = new CartItem();
             //set the productId and Cart on the CartItem
             cartItem.setProduct(product);
             cartItem.setCart(cart);

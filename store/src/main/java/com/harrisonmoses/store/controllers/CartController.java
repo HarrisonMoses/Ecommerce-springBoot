@@ -3,16 +3,8 @@ import com.harrisonmoses.store.Dtos.AddCartItemRequest;
 import com.harrisonmoses.store.Dtos.CartDto;
 import com.harrisonmoses.store.Dtos.CartItemDto;
 import com.harrisonmoses.store.Dtos.UpdateCartItemRequest;
-import com.harrisonmoses.store.Entity.Cart;
-import com.harrisonmoses.store.Entity.Cartitem;
-import com.harrisonmoses.store.Exceptions.CartItemNotFoundException;
 import com.harrisonmoses.store.Exceptions.CartNotFoundException;
 import com.harrisonmoses.store.Exceptions.ProductNotFoundException;
-import com.harrisonmoses.store.Mappers.CartItemMapper;
-import com.harrisonmoses.store.Mappers.CartMapper;
-import com.harrisonmoses.store.repositories.CartItemRepository;
-import com.harrisonmoses.store.repositories.CartRepository;
-import com.harrisonmoses.store.repositories.ProductRepository;
 import com.harrisonmoses.store.services.CartService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -22,8 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 

@@ -1,12 +1,8 @@
 package com.harrisonmoses.store.Entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.GenericGenerator;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -28,17 +24,19 @@ public class Cart {
     private LocalDate dateCreated;
 
     @OneToMany(mappedBy = "cart",fetch = FetchType.EAGER)
-    private Set<Cartitem> cartItems = new LinkedHashSet<>();
+    private Set<CartItem> cartItems = new LinkedHashSet<>();
 
     public BigDecimal getTotalPrice() {
         BigDecimal totalPrice = BigDecimal.ZERO;
-        for (Cartitem item : cartItems) {
-            BigDecimal calculatedTotalPrice = item.getProduct()
-                            .getPrice().multiply(BigDecimal
-                            .valueOf(item.getQuantity()));
 
-            totalPrice = totalPrice.add(calculatedTotalPrice);
+        for (CartItem item : cartItems) {
+            BigDecimal lineTotal = item.getProduct()
+                    .getPrice()
+                    .multiply(BigDecimal.valueOf(item.getQuantity()));
+
+            totalPrice = totalPrice.add(lineTotal);
         }
+
         return totalPrice;
     }
 
