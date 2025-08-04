@@ -1,5 +1,6 @@
 package com.harrisonmoses.store.services;
 
+import com.harrisonmoses.store.Entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -14,12 +15,14 @@ public class JwtService {
     @Value("${jwt.secret}")
     private String secret;
 
-    public String generateToken(String email){
+    public String generateToken(User user){
         var EXPIRATION = 86400;
         return Jwts.builder()
-                .setSubject(email)
+                .setSubject(user.getId().toString())
                 .setIssuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + 1000 * EXPIRATION))
+                .claim("email", user.getEmail())
+                .claim("name", user.getName())
                 .signWith(Keys.hmacShaKeyFor(secret.getBytes()))
                 .compact();
     }
@@ -41,7 +44,8 @@ public class JwtService {
                 .getPayload();
     }
 
-    public String getEmailFromToken(String token){
-        return getClaims(token).getSubject();
+    public Long getEmailFromToken(String token){
+
+        return Long.valueOf(getClaims(token).getSubject());
     }
 }

@@ -36,7 +36,7 @@ public class SecurityConfiguration {
                         c->c.requestMatchers("/carts/**").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/users").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-                                //.requestMatchers(HttpMethod.POST, "/auth/validate").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/auth/me").permitAll()
                                 .anyRequest().authenticated()
                         )
                         .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
