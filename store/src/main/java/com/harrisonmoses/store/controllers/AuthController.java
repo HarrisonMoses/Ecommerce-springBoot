@@ -37,7 +37,8 @@ public class AuthController {
     }
 
     @PostMapping("/validate")
-    public boolean validate(@RequestHeader("Authorization") String token){
+    public boolean validate(@RequestHeader("Authorization") String header){
+        var token = header.replace("Bearer ", "");
         return jwtService.validateToken(token);
     }
 
