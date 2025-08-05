@@ -15,12 +15,25 @@ public class JwtService {
     @Value("${jwt.secret}")
     private String secret;
 
-    public String generateToken(User user){
-        var EXPIRATION = 86400;
+    public String generateAccessToken(User user){
+        var EXPIRATION = 5*3600;
+        return generateToken(user,EXPIRATION);
+
+    }
+
+    public String generateRefreshToken(User user){
+        var EXPIRATION = 7*24*60*60;
+        return generateToken(user,EXPIRATION);
+
+    }
+
+
+
+    private String generateToken(User user, int EXPIRATION_DURATION){
         return Jwts.builder()
                 .setSubject(user.getId().toString())
                 .setIssuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + 1000 * EXPIRATION))
+                .expiration(new Date(System.currentTimeMillis() + 1000 * EXPIRATION_DURATION))
                 .claim("email", user.getEmail())
                 .claim("name", user.getName())
                 .signWith(Keys.hmacShaKeyFor(secret.getBytes()))
@@ -44,7 +57,7 @@ public class JwtService {
                 .getPayload();
     }
 
-    public Long getEmailFromToken(String token){
+    public Long getIdFromToken(String token){
 
         return Long.valueOf(getClaims(token).getSubject());
     }

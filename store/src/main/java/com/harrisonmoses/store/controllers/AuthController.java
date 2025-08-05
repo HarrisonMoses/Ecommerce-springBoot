@@ -6,6 +6,8 @@ import com.harrisonmoses.store.Dtos.UserDto;
 import com.harrisonmoses.store.Mappers.UserMapper;
 import com.harrisonmoses.store.repositories.UserRepository;
 import com.harrisonmoses.store.services.JwtService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -29,7 +31,7 @@ public class AuthController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<JwtResponse> login(@Valid @RequestBody LoginRequest request){
+    public ResponseEntity<JwtResponse> login(@Valid @RequestBody LoginRequest request, HttpServletResponse response){
        authenticationManager.authenticate(
                new UsernamePasswordAuthenticationToken(
                        request.getEmail(),
@@ -39,8 +41,32 @@ public class AuthController {
 
        var  user = userRepository.findByEmail(request.getEmail()).orElseThrow();
 
-       var token = jwtService.generateToken(user);
-       return ResponseEntity.ok(new  JwtResponse(token));
+       var tokenAccess = jwtService.generateAccessToken(user);
+       var refreshToken = jwtService.generateRefreshToken(user);
+
+       var cookie = new Cookie("refreshToken",refreshToken);
+       cookie.setMaxAge(30*24*60*60);
+       cookie.setPath("/auth/refresh");
+       cookie.setSecure(true);
+//       cookie.setHttpOnly(true);
+
+       response.addCookie(cookie);
+
+       return ResponseEntity.ok(new  JwtResponse(tokenAccess));
+    }
+
+    @PostMapping("refresh")
+    public ResponseEntity<JwtResponse> refresh(
+            @CookieValue("refreshToken") String refreshToken
+    ){
+        if(!jwtService.validateToken(refreshToken)){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        var userId = jwtService.getIdFromToken(refreshToken);
+        var user = userRepository.findById(userId).orElseThrow();
+        var tokenAccess = jwtService.generateAccessToken(user);
+        return ResponseEntity.ok(new  JwtResponse(tokenAccess)) ;
     }
 
     @GetMapping("/me")
