@@ -36,6 +36,7 @@ public class JwtService {
                 .setSubject(user.getId().toString())
                 .claim("email", user.getEmail())
                 .claim("name", user.getName())
+                .claim("role", user.getRole())
                 .setIssuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + 1000 * EXPIRATION_DURATION))
                 .signWith(jwtConfig.getSecretKey())
@@ -61,7 +62,10 @@ public class JwtService {
     }
 
     public Long getIdFromToken(String token){
-
         return Long.valueOf(getClaims(token).getSubject());
+    }
+
+    public String getRoleFromToken(String token){
+        return String.valueOf(getClaims(token).get("role"));
     }
 }

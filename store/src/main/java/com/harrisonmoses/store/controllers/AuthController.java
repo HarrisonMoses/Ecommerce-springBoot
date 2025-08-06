@@ -84,12 +84,6 @@ public class AuthController {
         return ResponseEntity.ok(mappedUser);
     }
 
-    @PostMapping("/validate")
-    public boolean validate(@RequestHeader("Authorization") String header){
-        System.out.println("validate called");
-        var token = header.replace("Bearer ", "");
-        return jwtService.validateToken(token);
-    }
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<Void> unAuthorized(){
