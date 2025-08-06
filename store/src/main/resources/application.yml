@@ -8,13 +8,12 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     show-sql: true
-
+  jwt:
+    secret: ${SECRET_KEY}
+    accessTokenExpiration: 300
+    refreshTokenExpiration: 604800
 
 server:
   port: 8081
 
-jwt:
-  secret: ${SECRET_KEY}
-  accessTokenExpiration: 18000
-  refreshTokenExpiration: 604800
-  cookieExpiration: 2592000
+

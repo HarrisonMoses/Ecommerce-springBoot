@@ -1,5 +1,6 @@
 package com.harrisonmoses.store.configuration;
 
+
 import io.jsonwebtoken.security.Keys;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -11,12 +12,12 @@ import javax.crypto.SecretKey;
 @ConfigurationProperties(prefix = "spring.jwt")
 @Data
 public class JwtConfig {
-    private String secret;
-    private int accessTokenExpiration;
-    private int refreshTokenExpiration;
-    private int cookieExpiration;
+     private String secret;
+     private int accessTokenExpiration;
+     private int refreshTokenExpiration;
 
-    public SecretKey getSecretKey() {
+
+    public SecretKey getSecretKey( ) {
         return Keys.hmacShaKeyFor(secret.getBytes());
     }
 }

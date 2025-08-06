@@ -1,9 +1,10 @@
 package com.harrisonmoses.store;
 
 
+import com.harrisonmoses.store.configuration.JwtConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 
 @SpringBootApplication
