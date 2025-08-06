@@ -15,3 +15,6 @@ server:
 
 jwt:
   secret: ${SECRET_KEY}
+  accessTokenExpiration: 18000
+  refreshTokenExpiration: 604800
+  cookieExpiration: 2592000

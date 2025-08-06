@@ -4,6 +4,7 @@ import com.harrisonmoses.store.Dtos.JwtResponse;
 import com.harrisonmoses.store.Dtos.LoginRequest;
 import com.harrisonmoses.store.Dtos.UserDto;
 import com.harrisonmoses.store.Mappers.UserMapper;
+import com.harrisonmoses.store.configuration.JwtConfig;
 import com.harrisonmoses.store.repositories.UserRepository;
 import com.harrisonmoses.store.services.JwtService;
 import jakarta.servlet.http.Cookie;
@@ -16,7 +17,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -28,6 +28,7 @@ public class AuthController {
     private final JwtService jwtService;
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final JwtConfig jwtConfig;
 
 
     @PostMapping("/login")
@@ -45,7 +46,7 @@ public class AuthController {
        var refreshToken = jwtService.generateRefreshToken(user);
 
        var cookie = new Cookie("refreshToken",refreshToken);
-       cookie.setMaxAge(30*24*60*60);
+       cookie.setMaxAge(jwtConfig.getCookieExpiration());
        cookie.setPath("/auth/refresh");
        cookie.setSecure(true);
 //       cookie.setHttpOnly(true);
