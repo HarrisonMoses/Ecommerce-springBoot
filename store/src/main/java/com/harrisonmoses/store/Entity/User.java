@@ -25,6 +25,7 @@ public class User {
     @Column(unique = true, nullable = false, name = "id")
     private Long  id;
 
+
     @Column(name= "name")
     private String name;
 
@@ -33,6 +34,10 @@ public class User {
 
     @Column(name= "password")
     private String password;
+
+    @Column(name = "role")
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @OneToMany(mappedBy = "user")
     @Builder.Default
