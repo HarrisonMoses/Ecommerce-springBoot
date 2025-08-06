@@ -29,7 +29,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
        };
 
        var token =  request.getHeader("Authorization").replace("Bearer ", "");
-       if(!jwtService.validateToken(token)){
+       if(jwtService.validateToken(token)){
            filterChain.doFilter(request,response);
            return;
        }

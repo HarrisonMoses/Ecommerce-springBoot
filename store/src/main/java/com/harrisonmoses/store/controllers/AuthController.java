@@ -60,7 +60,7 @@ public class AuthController {
     public ResponseEntity<JwtResponse> refresh(
             @CookieValue("refreshToken") String refreshToken
     ){
-        if(!jwtService.validateToken(refreshToken)){
+        if(jwtService.validateToken(refreshToken)){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 

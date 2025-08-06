@@ -5,7 +5,6 @@ import com.harrisonmoses.store.configuration.JwtConfig;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -46,10 +45,10 @@ public class JwtService {
     public boolean validateToken(String token){
         try{
             var claims = getClaims(token);
-            return claims.getExpiration().after(new Date());
+            return !claims.getExpiration().after(new Date());
 
         }catch(JwtException ex){
-            return false;
+            return true;
         }
     }
 
