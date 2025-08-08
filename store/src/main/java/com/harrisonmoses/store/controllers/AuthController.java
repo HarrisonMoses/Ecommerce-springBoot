@@ -6,6 +6,7 @@ import com.harrisonmoses.store.Dtos.UserDto;
 import com.harrisonmoses.store.Mappers.UserMapper;
 import com.harrisonmoses.store.configuration.JwtConfig;
 import com.harrisonmoses.store.repositories.UserRepository;
+import com.harrisonmoses.store.services.Jwt;
 import com.harrisonmoses.store.services.JwtService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -29,6 +30,7 @@ public class AuthController {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final JwtConfig jwtConfig;
+    private final Jwt jwt;
 
 
     @PostMapping("/login")
@@ -42,8 +44,8 @@ public class AuthController {
 
        var  user = userRepository.findByEmail(request.getEmail()).orElseThrow();
 
-       var tokenAccess = jwtService.generateAccessToken(user);
-       var refreshToken = jwtService.generateRefreshToken(user);
+       var tokenAccess = jwtService.generateAccessToken(user).toString();
+       var refreshToken = jwtService.generateRefreshToken(user).toString();
 
        var cookie = new Cookie("refreshToken",refreshToken);
        cookie.setMaxAge(jwtConfig.getRefreshTokenExpiration());
@@ -60,13 +62,13 @@ public class AuthController {
     public ResponseEntity<JwtResponse> refresh(
             @CookieValue("refreshToken") String refreshToken
     ){
-        if(jwtService.validateToken(refreshToken)){
+        if(){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        var userId = jwtService.getIdFromToken(refreshToken);
+        var userId = jwt.getIdFromToken();
         var user = userRepository.findById(userId).orElseThrow();
-        var tokenAccess = jwtService.generateAccessToken(user);
+        var tokenAccess = jwtService.generateAccessToken(user).toString();
         return ResponseEntity.ok(new  JwtResponse(tokenAccess)) ;
     }
 

@@ -16,13 +16,13 @@ public class JwtService {
     private final JwtConfig jwtConfig;
 
 
-    public String generateAccessToken(User user){
+    public Jwt generateAccessToken(User user){
 
         return generateToken(user,jwtConfig.getAccessTokenExpiration());
 
     }
 
-    public String generateRefreshToken(User user){
+    public Jwt generateRefreshToken(User user){
 
         return generateToken(user,jwtConfig.getRefreshTokenExpiration());
 
@@ -30,27 +30,21 @@ public class JwtService {
 
 
 
-    private String generateToken(User user, int EXPIRATION_DURATION){
-        return Jwts.builder()
+    private Jwt generateToken(User user, int EXPIRATION_DURATION){
+        var claims =  Jwts.claims()
                 .setSubject(user.getId().toString())
-                .claim("email", user.getEmail())
-                .claim("name", user.getName())
-                .claim("role", user.getRole())
+                .add("email", user.getEmail())
+                .add("name", user.getName())
+                .add("role", user.getRole())
                 .setIssuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + 1000 * EXPIRATION_DURATION))
-                .signWith(jwtConfig.getSecretKey())
-                .compact();
+                .build();
+
+        return new Jwt(claims, jwtConfig.getSecretKey());
+
     }
 
-    public boolean validateToken(String token){
-        try{
-            var claims = getClaims(token);
-            return !claims.getExpiration().after(new Date());
 
-        }catch(JwtException ex){
-            return true;
-        }
-    }
 
     private Claims getClaims(String token) {
         return Jwts.parser()
@@ -60,11 +54,5 @@ public class JwtService {
                 .getPayload();
     }
 
-    public Long getIdFromToken(String token){
-        return Long.valueOf(getClaims(token).getSubject());
-    }
 
-    public String getRoleFromToken(String token){
-        return String.valueOf(getClaims(token).get("role"));
-    }
 }
