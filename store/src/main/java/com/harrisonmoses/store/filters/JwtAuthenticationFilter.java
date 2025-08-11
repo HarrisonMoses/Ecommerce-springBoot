@@ -1,6 +1,5 @@
 package com.harrisonmoses.store.filters;
 
-import com.harrisonmoses.store.services.Jwt;
 import com.harrisonmoses.store.services.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -15,14 +14,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 
 @Component
 @AllArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
-    private final Jwt jwt;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -32,14 +29,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
        };
 
        var token =  request.getHeader("Authorization").replace("Bearer ", "");
-       if(jwt.getClaims().getExpiration().after(new Date())){
+       var jwt = jwtService.parseToken(token);
+
+       if(jwt == null || !jwt.isValid()){
            filterChain.doFilter(request,response);
            return;
        }
 
-       var userId =  jwt.getIdFromToken();
+       var userId =  jwt.getId();
        var userRole =  jwt.getRole();
-       var authentication = new UsernamePasswordAuthenticationToken(
+
+        var authentication = new UsernamePasswordAuthenticationToken(
               userId,
                null,
                List.of(new SimpleGrantedAuthority("ROLE_"+userRole))

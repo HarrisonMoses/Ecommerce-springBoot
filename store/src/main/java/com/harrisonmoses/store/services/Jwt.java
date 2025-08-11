@@ -4,41 +4,38 @@ import com.harrisonmoses.store.Entity.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
 
 
-@Service
 public class Jwt {
-    private Claims claims;
-    private SecretKey secretKey;
+    private final Claims claims;
+    private final SecretKey secret;
 
 
-    public Jwt(Claims claims,  SecretKey secretKey) {
+    public Jwt(Claims claims,  SecretKey secret) {
         this.claims = claims;
-        this.secretKey = secretKey;
+        this.secret = secret;
     }
 
-    public SecretKey getSecretKey() {
-        return secretKey;
+    public SecretKey getSecret() {
+        return secret;
     }
 
     public Claims getClaims() {
         return claims;
     }
 
-    public Long getIdFromToken(){
+    public Long getId(){
         return Long.valueOf(claims.getSubject());
     }
 
-    public boolean IsValid(){
+    public boolean isValid(){
         try{
-            return !claims.getExpiration().after(new Date());
-
+            return !claims.getExpiration().before(new Date());
         }catch(JwtException ex){
-            return true;
+            return false;
         }
     }
 
@@ -47,7 +44,7 @@ public class Jwt {
     }
 
     public String toString(){
-            return Jwts.builder().claims(claims).signWith(secretKey).compact();
+            return Jwts.builder().claims(claims).signWith(secret).compact();
 
     }
 

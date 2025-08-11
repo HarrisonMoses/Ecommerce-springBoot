@@ -9,8 +9,8 @@ spring:
   jpa:
     show-sql: true
   jwt:
-    secret: ${SECRET_KEY}
-    accessTokenExpiration: 300
+    secretKey: ${SECRET_KEY}
+    accessTokenExpiration: 54000
     refreshTokenExpiration: 604800
 
 server:
