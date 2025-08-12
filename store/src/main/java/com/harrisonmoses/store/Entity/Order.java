@@ -6,6 +6,8 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -30,5 +32,8 @@ public class Order {
 
     @Column(name = "total_price")
     private BigDecimal totalPrice;
+
+    @OneToMany(mappedBy = "order")
+    private Set<OrderItem> items = new LinkedHashSet<>();
 
 }

@@ -1,0 +1,62 @@
+package com.harrisonmoses.store.services;
+
+import com.harrisonmoses.store.Dtos.CheckOutRequest;
+import com.harrisonmoses.store.Dtos.OrderDto;
+import com.harrisonmoses.store.Entity.Order;
+import com.harrisonmoses.store.Entity.Status;
+import com.harrisonmoses.store.Entity.User;
+import com.harrisonmoses.store.Exceptions.CartNotFoundException;
+import com.harrisonmoses.store.Mappers.CartMapper;
+import com.harrisonmoses.store.Mappers.OrderMapper;
+import com.harrisonmoses.store.repositories.CartRepository;
+import com.harrisonmoses.store.repositories.OrderRepository;
+import com.harrisonmoses.store.repositories.UserRepository;
+
+import lombok.AllArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+
+@AllArgsConstructor
+@Service
+public class OrderService {
+    public final CartRepository cartRepository;
+    private final UserRepository userRepository;
+    private final CartMapper cartMapper;
+    private final OrderRepository orderRepository;
+    private final OrderMapper orderMapper;
+
+
+    private User getCurrentUser(){
+        var userId = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return userRepository.findById(userId).orElseThrow();
+    }
+
+    public Order checkoutOrder(CheckOutRequest request) {
+        var cart = cartRepository.findById(request.getCartId()).orElse(null);
+        if (cart == null) {
+            throw new CartNotFoundException();
+        }
+        //create an order object
+        var order = new Order();
+        order.setCreatedAt(java.time.LocalDate.now());
+        order.setStatus(Status.PENDING);
+        order.setCustomer(getCurrentUser());
+        //get the total price of the cart to set the order_total price
+        var cartDto = cartMapper.createCart(cart);
+        order.setTotalPrice(cartDto.getTotalPrice());
+
+        return order;
+
+    }
+
+    public List<OrderDto> getOrders(){
+        //get the current user.
+        var user = getCurrentUser();
+        var orders = orderRepository.getAllByCustomer(user);
+        return orders.stream().map(orderMapper::toDto).toList();
+
+    }
+}
