@@ -1,7 +1,34 @@
 package com.harrisonmoses.store.Entity;
 
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
+@Getter
+@Setter
 @Entity
+@Table(name = "orders")
 public class Order {
-  }
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "customer_id")
+    private User customer;
+
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
+    @Column(name = "created_at")
+    private LocalDate createdAt;
+
+    @Column(name = "total_price")
+    private BigDecimal totalPrice;
+
+}

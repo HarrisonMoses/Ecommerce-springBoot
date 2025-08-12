@@ -10,11 +10,11 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @Entity
-@Table(name = "cartitem")
+@Table(name = "cartItems")
 public class CartItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id")
     private Long id;
 
     @ManyToOne
@@ -25,10 +25,11 @@ public class CartItem {
     @JoinColumn(name = "product_id")
     private Product product;
 
-    @Column(name = "quantity" , nullable = false, insertable = true, updatable = true)
+    @Column(name = "quantity")
     private Integer quantity;
 
     public BigDecimal getTotalPrice() {
+
         return product.getPrice().multiply(BigDecimal.valueOf(quantity));
     }
 }
