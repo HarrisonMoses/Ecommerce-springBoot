@@ -16,41 +16,27 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
 
 @RestController
 @AllArgsConstructor
+@RequestMapping("/orders")
 public class OrdersController {
-    private final CartRepository cartRepository;
-    private final UserRepository userRepository;
-    private final CartMapper cartMapper;
     private final OrderRepository orderRepository;
     private final OrderService orderService;
 
-
-
-
-    @PostMapping("/checkout")
-    public ResponseEntity<?> checkOut(@Valid @RequestBody CheckOutRequest request) {
-        var order = orderService.checkoutOrder(request);
-        //save the order
-        orderRepository.save(order);
-        return ResponseEntity.ok(Map.of("orderId: ", order.getId()));
-    }
-
-    @GetMapping("/orders")
+    @GetMapping
     public ResponseEntity<List<OrderDto>> getOrders(){
         return ResponseEntity.status(HttpStatus.OK).body(orderService.getOrders());
     }
 
-    @GetMapping("/orders/{orderId}")
-    public void orderInstance(){
+    @GetMapping("/{orderId}")
+    public ResponseEntity<OrderDto> orderInstance(@PathVariable long orderId){
+
+        return ResponseEntity.status(HttpStatus.OK).body(orderService.getOrder(orderId));
 
     }
 

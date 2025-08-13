@@ -3,9 +3,11 @@ package com.harrisonmoses.store.services;
 import com.harrisonmoses.store.Dtos.CheckOutRequest;
 import com.harrisonmoses.store.Dtos.OrderDto;
 import com.harrisonmoses.store.Entity.Order;
+import com.harrisonmoses.store.Entity.OrderItem;
 import com.harrisonmoses.store.Entity.Status;
 import com.harrisonmoses.store.Entity.User;
 import com.harrisonmoses.store.Exceptions.CartNotFoundException;
+import com.harrisonmoses.store.Exceptions.OrderNotFoundException;
 import com.harrisonmoses.store.Mappers.CartMapper;
 import com.harrisonmoses.store.Mappers.OrderMapper;
 import com.harrisonmoses.store.repositories.CartRepository;
@@ -48,6 +50,16 @@ public class OrderService {
         var cartDto = cartMapper.createCart(cart);
         order.setTotalPrice(cartDto.getTotalPrice());
 
+        //
+        cart.getCartItems().forEach(cartItem -> {
+            var orderItem = new OrderItem();
+            orderItem.setOrder(order);
+            orderItem.setTotalPrice(cartItem.getTotalPrice());
+            orderItem.setProduct(cartItem.getProduct());
+            orderItem.setQuantity(cartItem.getQuantity());
+            orderItem.setUnitPrice(cartItem.getProduct().getPrice());
+            order.getItems().add(orderItem);
+        });
         return order;
 
     }
@@ -57,6 +69,17 @@ public class OrderService {
         var user = getCurrentUser();
         var orders = orderRepository.getAllByCustomer(user);
         return orders.stream().map(orderMapper::toDto).toList();
+
+    }
+
+    public OrderDto getOrder(long orderId){
+        var user = getCurrentUser();
+        var order = orderRepository.getAllByCustomer(user)
+                .stream().filter(o -> o.getId() == orderId)
+                .findFirst()
+                .orElseThrow(OrderNotFoundException::new);
+
+       return orderMapper.toDto(order);
 
     }
 }
