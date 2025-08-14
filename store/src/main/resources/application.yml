@@ -13,6 +13,11 @@ spring:
     accessTokenExpiration: 54000
     refreshTokenExpiration: 604800
 
+stripe:
+  secretKey: ${STRIPE_SECRET_KEY}
+
+websiteUrl: "http://localhost:4242"
+
 server:
   port: 8081
 

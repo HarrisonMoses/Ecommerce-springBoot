@@ -40,4 +40,8 @@ public class Cart {
         return totalPrice;
     }
 
+    public boolean isEmpty() {
+        return cartItems.isEmpty();
+    }
+
 }
