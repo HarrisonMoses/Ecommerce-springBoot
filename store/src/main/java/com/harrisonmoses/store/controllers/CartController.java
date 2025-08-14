@@ -36,6 +36,7 @@ public class CartController {
 
     @GetMapping("{id}")
     public ResponseEntity<?> getCart(@PathVariable UUID id){
+
         return cartService.getCart(id);
     }
 

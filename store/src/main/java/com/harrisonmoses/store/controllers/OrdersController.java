@@ -5,6 +5,8 @@ import com.harrisonmoses.store.Dtos.CheckOutRequest;
 import com.harrisonmoses.store.Dtos.OrderDto;
 import com.harrisonmoses.store.Entity.Order;
 import com.harrisonmoses.store.Entity.Status;
+import com.harrisonmoses.store.Exceptions.OrderNotFoundException;
+import com.harrisonmoses.store.Exceptions.ProductNotFoundException;
 import com.harrisonmoses.store.Mappers.CartMapper;
 import com.harrisonmoses.store.repositories.CartRepository;
 import com.harrisonmoses.store.repositories.OrderRepository;
@@ -30,14 +32,20 @@ public class OrdersController {
 
     @GetMapping
     public ResponseEntity<List<OrderDto>> getOrders(){
-        return ResponseEntity.status(HttpStatus.OK).body(orderService.getOrders());
+        var orders = orderService.getOrders();
+        return ResponseEntity.status(HttpStatus.OK).body(orders);
     }
 
     @GetMapping("/{orderId}")
     public ResponseEntity<OrderDto> orderInstance(@PathVariable long orderId){
 
         return ResponseEntity.status(HttpStatus.OK).body(orderService.getOrder(orderId));
-
     }
+
+    @ExceptionHandler({OrderNotFoundException.class})
+    public ResponseEntity<Map<String,String>> OrderNotFoundException(){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error","Order Not Found"));
+    }
+
 
 }

@@ -2,6 +2,7 @@ package com.harrisonmoses.store.controllers;
 
 import com.harrisonmoses.store.Dtos.CheckOutRequest;
 import com.harrisonmoses.store.repositories.OrderRepository;
+import com.harrisonmoses.store.services.CheckoutService;
 import com.harrisonmoses.store.services.OrderService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -19,11 +20,11 @@ import java.util.Map;
 public class CheckoutController {
 
     private final OrderRepository orderRepository;
-    private final OrderService orderService;
+    private final CheckoutService checkoutService;
 
     @PostMapping
     public ResponseEntity<?> checkOut(@Valid @RequestBody CheckOutRequest request) {
-        var order = orderService.checkoutOrder(request);
+        var order = checkoutService.checkoutOrder(request);
         //save the order
         orderRepository.save(order);
         return ResponseEntity.ok(Map.of("orderId: ", order.getId()));
