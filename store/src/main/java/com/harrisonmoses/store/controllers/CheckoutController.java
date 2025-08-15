@@ -32,7 +32,7 @@ public class CheckoutController {
 
 
     @PostMapping
-    public ResponseEntity<?> checkOut(@Valid @RequestBody CheckOutRequest request) throws StripeException {
+    public ResponseEntity<?> checkOut(@Valid @RequestBody CheckOutRequest request){
         try {
            return ResponseEntity.ok(checkoutService.checkoutOrder(request));
         }catch (Exception ex){
@@ -40,7 +40,6 @@ public class CheckoutController {
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("message", "Some thing went wrong on the server"));
         }
-
 
 
     }

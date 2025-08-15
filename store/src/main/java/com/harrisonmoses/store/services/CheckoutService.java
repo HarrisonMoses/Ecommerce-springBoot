@@ -6,37 +6,31 @@ import com.harrisonmoses.store.Dtos.CheckoutResponse;
 import com.harrisonmoses.store.Entity.*;
 import com.harrisonmoses.store.Exceptions.CartIsEmptyException;
 import com.harrisonmoses.store.Exceptions.CartNotFoundException;
+import com.harrisonmoses.store.Exceptions.PaymentException;
 import com.harrisonmoses.store.Mappers.CartMapper;
 import com.harrisonmoses.store.repositories.CartRepository;
 import com.harrisonmoses.store.repositories.OrderRepository;
+import com.harrisonmoses.store.services.payment.PaymentGateway;
 import com.stripe.exception.StripeException;
-import com.stripe.model.checkout.Session;
-import com.stripe.param.checkout.SessionCreateParams;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 
 
 @Service
 @RequiredArgsConstructor
-public class CheckoutService {
+public class  CheckoutService {
 
     private final CartRepository cartRepository;
     private final OrderRepository orderRepository;
     private final CartMapper cartMapper;
     private final AuthService authService;
-
-    @Value("${websiteUrl}")
-    private String websiteDomain;
+    private final PaymentGateway paymentGateway;
 
 
     @Transactional
-    public CheckoutResponse checkoutOrder(CheckOutRequest request) throws StripeException {
+    public CheckoutResponse checkoutOrder(CheckOutRequest request) {
         var cart = cartRepository.findById(request.getCartId()).orElse(null);
         if (cart == null) {
             throw new CartNotFoundException();
@@ -49,45 +43,17 @@ public class CheckoutService {
         orderRepository.save(order);
 
         try{
+            var session = paymentGateway.checkoutsession(order);
+            return new CheckoutResponse(order.getId(), session.getSessionUrl());
 
-            //create a checkout session
-            var builder = SessionCreateParams.builder()
-                    .setMode(SessionCreateParams.Mode.PAYMENT)
-                    .setSuccessUrl(websiteDomain + "/checkout-success?="+order.getId())
-                    .setCancelUrl(websiteDomain + "/checkout-cancel");
-
-            order.getItems().forEach(item -> {
-                        var lineItem = SessionCreateParams.LineItem.builder()
-                                .setQuantity(Long.valueOf(item.getQuantity()))
-                                .setPriceData(
-                                        SessionCreateParams.LineItem.PriceData.builder()
-                                                 .setCurrency("usd")
-                                                .setUnitAmountDecimal(
-                                                        item.getUnitPrice()
-                                                        .multiply(BigDecimal.valueOf(100))
-                                                )
-                                                .setProductData(
-                                                        SessionCreateParams.LineItem.PriceData.ProductData.builder()
-                                                                .setName(item.getProduct().getName())
-                                                                .build()
-                                                ).build()
-
-                                ).build();
-
-                        builder.addLineItem(lineItem);
-                    }
-            );
-
-            var session = Session.create(builder.build());
-
-
-            return new CheckoutResponse(order.getId(), session.getUrl());
-
-        }catch(Exception ex){
+        }catch(PaymentException e){
             orderRepository.delete(order);
-            throw ex;
+            throw e;
 
         }
+
+
+
     }
 
 
