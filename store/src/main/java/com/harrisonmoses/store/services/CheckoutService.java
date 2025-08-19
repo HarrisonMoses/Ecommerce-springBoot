@@ -33,14 +33,19 @@ public class  CheckoutService {
     public CheckoutResponse checkoutOrder(CheckOutRequest request) {
         var cart = cartRepository.findById(request.getCartId()).orElse(null);
         if (cart == null) {
+            System.out.println("Cart not found");
             throw new CartNotFoundException();
         }
         if (cart.isEmpty()){
+            System.out.println("Cart is empty");
             throw new CartIsEmptyException();
         }
-
+        System.out.println("passed");
         var order = getOrder(cart,authService.getCurrentUser());
+        System.out.println("pass two");
         orderRepository.save(order);
+
+        cart.clear();
 
         try{
             var session = paymentGateway.checkoutsession(order);

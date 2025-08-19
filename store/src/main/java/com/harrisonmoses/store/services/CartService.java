@@ -20,6 +20,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -109,12 +110,14 @@ public class CartService {
         return cartItemMapper.toDto(cartItem);
     }
 
-    public ResponseEntity<?> deleteCart(UUID id){
+
+    public ResponseEntity<?> clearCart(UUID id){
         var cart = cartRepository.findById(id).orElse(null);
         if(cart == null){
-            return ResponseEntity.notFound().build();
+            throw new CartNotFoundException();
         }
-        cartRepository.delete(cart);
+        cart.clear();
+        cartRepository.save(cart);
         return ResponseEntity.noContent().build();
     }
 

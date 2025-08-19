@@ -60,9 +60,9 @@ public class CartController {
         return cartService.removeCartItem(cartId,productId);
     }
 
-    @DeleteMapping("{cartId}")
-    public ResponseEntity<?> deleteCart(@PathVariable UUID cartId){
-        return cartService.deleteCart(cartId);
+    @PutMapping("{cartId}/items")
+    public ResponseEntity<?> clearCart(@PathVariable UUID cartId){
+        return cartService.clearCart(cartId);
     }
 
     @ExceptionHandler({ProductNotFoundException.class})

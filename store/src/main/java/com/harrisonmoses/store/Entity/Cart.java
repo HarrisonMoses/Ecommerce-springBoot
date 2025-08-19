@@ -23,7 +23,7 @@ public class Cart {
     @Column(name = "datecreated", insertable = false, updatable = false)
     private LocalDate dateCreated;
 
-    @OneToMany(mappedBy = "cart",fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "cart",fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private Set<CartItem> cartItems = new LinkedHashSet<>();
 
     public BigDecimal getTotalPrice() {
@@ -42,6 +42,12 @@ public class Cart {
 
     public boolean isEmpty() {
         return cartItems.isEmpty();
+    }
+
+    public void clear() {
+        if (cartItems != null) {
+            cartItems.clear();
+        }
     }
 
 }

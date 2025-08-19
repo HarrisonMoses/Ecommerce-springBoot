@@ -25,7 +25,6 @@ public class StripePaymentGateWay implements PaymentGateway {
     @Override
     public CheckoutSession checkoutsession(Order order) {
         try{
-
             //create a checkout session
             var builder = SessionCreateParams.builder()
                     .setMode(SessionCreateParams.Mode.PAYMENT)

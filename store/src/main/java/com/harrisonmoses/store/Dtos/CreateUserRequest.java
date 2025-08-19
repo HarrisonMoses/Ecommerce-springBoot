@@ -1,5 +1,6 @@
 package com.harrisonmoses.store.Dtos;
 
+import com.harrisonmoses.store.Entity.Role;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -16,5 +17,7 @@ public class CreateUserRequest {
     @NotBlank(message = "Password can't be null")
     @Size(max =12, min = 6, message = "password should be 6 or more characters.")
     private String password;
+
+    private Role role = Role.USER;
 
 }
