@@ -1,9 +1,11 @@
-package com.harrisonmoses.store.services.payment;
+package com.harrisonmoses.store.payment;
 
 
 import com.harrisonmoses.store.Entity.Order;
 import com.harrisonmoses.store.Entity.OrderItem;
 import com.harrisonmoses.store.Exceptions.PaymentException;
+import com.harrisonmoses.store.payment.CheckoutSession;
+import com.harrisonmoses.store.payment.PaymentGateway;
 import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
 import com.stripe.param.checkout.SessionCreateParams;

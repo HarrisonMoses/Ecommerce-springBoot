@@ -10,7 +10,7 @@ import com.harrisonmoses.store.Exceptions.PaymentException;
 import com.harrisonmoses.store.Mappers.CartMapper;
 import com.harrisonmoses.store.repositories.CartRepository;
 import com.harrisonmoses.store.repositories.OrderRepository;
-import com.harrisonmoses.store.services.payment.PaymentGateway;
+import com.harrisonmoses.store.payment.PaymentGateway;
 import com.stripe.exception.StripeException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

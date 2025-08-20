@@ -1,4 +1,4 @@
-package com.harrisonmoses.store.services.payment;
+package com.harrisonmoses.store.payment;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
