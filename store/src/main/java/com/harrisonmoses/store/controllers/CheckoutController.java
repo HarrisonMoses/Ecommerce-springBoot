@@ -1,18 +1,14 @@
 package com.harrisonmoses.store.controllers;
 
 import com.harrisonmoses.store.Dtos.CheckOutRequest;
-import com.harrisonmoses.store.Dtos.CheckoutResponse;
+import com.harrisonmoses.store.Entity.Status;
 import com.harrisonmoses.store.Exceptions.CartIsEmptyException;
 import com.harrisonmoses.store.repositories.OrderRepository;
 import com.harrisonmoses.store.services.CheckoutService;
-import com.harrisonmoses.store.services.OrderService;
 import com.stripe.exception.SignatureVerificationException;
-import com.stripe.exception.StripeException;
-import com.stripe.model.checkout.Session;
+import com.stripe.model.PaymentIntent;
 import com.stripe.net.Webhook;
-import com.stripe.param.checkout.SessionCreateParams;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -29,20 +25,16 @@ public class CheckoutController {
     private final OrderRepository orderRepository;
     private final CheckoutService checkoutService;
 
-    @Value("stripe.webhookSecreteKey")
-    private String endpointSecret;
+    @Value("${stripe.webhook_key}")
+    private String webhook_key;
 
 
 
     @PostMapping
     public ResponseEntity<?> checkOut(@Valid @RequestBody CheckOutRequest request){
-//        try {
+
            return ResponseEntity.ok(checkoutService.checkoutOrder(request));
-//        }catch (Exception ex){
-//            return ResponseEntity
-//                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-//                    .body(Map.of("message", "Some thing went wrong on the server"));
-//        }
+
 
     }
 
@@ -51,8 +43,8 @@ public class CheckoutController {
             @RequestHeader("Stripe-Signature") String signature,
             @RequestBody String payload
             ) throws SignatureVerificationException {
-
-        var event = Webhook.constructEvent(payload, signature, endpointSecret);
+        System.out.println(webhook_key);
+        var event = Webhook.constructEvent(payload, signature, webhook_key);
         System.out.println(event.getType());
 
         var stripeObject = event.getDataObjectDeserializer().getObject().orElse(null);
@@ -60,6 +52,13 @@ public class CheckoutController {
         switch (event.getType()) {
             case "payment_intent.succeeded"->{
                 //update the order status;
+                var paymentIntent = (PaymentIntent)stripeObject;
+                if(paymentIntent != null){
+                    var orderId = paymentIntent.getMetadata().get("order_id");
+                    var order = orderRepository.findById(Long.valueOf(orderId)).orElseThrow();
+                    order.setStatus(Status.PAID);
+                    orderRepository.save(order);
+                }
 
             }
             case"payment_intent.failed"->{
