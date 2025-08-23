@@ -25,7 +25,7 @@ public class Order {
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private PaymentStatus status;
 
     @Column(name = "created_at")
     private LocalDate createdAt;

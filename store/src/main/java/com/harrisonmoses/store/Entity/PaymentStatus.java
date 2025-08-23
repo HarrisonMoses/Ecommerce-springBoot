@@ -1,6 +1,6 @@
 package com.harrisonmoses.store.Entity;
 
-public enum Status {
+public enum PaymentStatus {
     PENDING,
     PAID,
     FAILED,

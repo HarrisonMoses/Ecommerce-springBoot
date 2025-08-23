@@ -11,11 +11,9 @@ import com.harrisonmoses.store.Mappers.CartMapper;
 import com.harrisonmoses.store.repositories.CartRepository;
 import com.harrisonmoses.store.repositories.OrderRepository;
 import com.harrisonmoses.store.payment.PaymentGateway;
-import com.stripe.exception.StripeException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 
 
 @Service
@@ -53,15 +51,25 @@ public class  CheckoutService {
         }
 
 
-
     }
+
+   public void handleWebhookRequest(WebhookRequest request) {
+        paymentGateway.parseWebhookRequest(request)
+                .ifPresent(paymentRequest -> {
+                    System.out.println("order_id "+paymentRequest.getOrder_id());
+                    var order = orderRepository.findById(paymentRequest.getOrder_id()).orElseThrow();
+                    order.setStatus(paymentRequest.getOrderStatus());
+                    orderRepository.save(order);
+                });
+
+   }
 
 
     private Order getOrder(Cart cart, User user) {
         //create an order object
         var order = new Order();
         order.setCreatedAt(java.time.LocalDate.now());
-        order.setStatus(Status.PENDING);
+        order.setStatus(PaymentStatus.PENDING);
         order.setCustomer(user);
         //get the total price of the cart to set the order_total price
         var cartDto = cartMapper.createCart(cart);
